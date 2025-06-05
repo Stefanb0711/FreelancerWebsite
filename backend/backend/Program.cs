@@ -12,51 +12,46 @@ using backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<Graphql.Mutations.Mutation>();
 
 
-builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+//builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 
 builder.Services.AddGraphQLServer().AddQueryType<Query>().AddMutationType<RootMutation>();
 
 
+
+// CORS konfigurieren
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularApp", policy =>
-        policy.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") // URL deines Frontends
+                .AllowAnyHeader()
+                .AllowAnyMethod(); // Erlaubt jede HTTP-Methode (GET, POST, PUT, DELETE, etc.)
+        });
 });
+
+
+builder.Services.AddControllers(); // Controller hinzufügen
+
+
+// CORS aktivieren
+
+
 
 builder.Services.AddHttpContextAccessor();
 
 
+
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<MongoDbService>(sp =>
-{
-    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return new MongoDbService(settings.ConnectionString, settings.DatabaseName);
-});
-
-builder.Services.AddSingleton<JwtTokenService>();
-builder.Services.AddScoped<AuthService>();
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngularApp", policy =>
-        policy.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
-});
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 
-
 builder.Services.AddSingleton<MongoDbService>(sp =>
 {
     var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
@@ -65,27 +60,29 @@ builder.Services.AddSingleton<MongoDbService>(sp =>
 
 
 builder.Services.AddSingleton<JwtTokenService>();
-builder.Services.AddScoped<TokenValidationFilter>();
-builder.Services.AddScoped<AuthService>();
+
+
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+/*
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+}*/
+
+app.UseCors("AllowReactApp");
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<TokenValidationMiddleware>();
+//app.UseMiddleware<TokenValidationMiddleware>();
 
+app.MapGraphQL("/graphql");
 
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
