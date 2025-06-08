@@ -105,6 +105,30 @@ export function RegisterStep1() {
 
                         <button onClick={() => setCurrentStep(2)}>Next</button>
 
+
+                        {/* Step-Next-Button */}
+                        <div>
+                            <button
+                                onClick={() => setCurrentStep(2)}
+                                type="button"
+                                className="fixed bottom-16 right-6 bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 z-50"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="bi bi-arrow-right"
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+
                     </div>
 
 
@@ -112,9 +136,8 @@ export function RegisterStep1() {
             )}
 
 
-
             <div id={'registrationFormular'} className={`${userType !== null ? 'block' : 'hidden'}
-                ${currentStep === 2 ? 'opacity-100 translate-y-0': 'opacity-0 -translate-y-10 pointer-events-none'}
+                ${currentStep === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}
                 transition-all duration-500 ease-in-out flex items-center justify-center min-h-screen bg-gray-100
             `}>
 
@@ -197,6 +220,26 @@ export function RegisterStep1() {
                                         Registrieren
                                     </button>
                                 </div>
+
+
+
+                                {/* Step-Back-Button */}
+                                <div className="mt-6">
+                                    <button
+                                        onClick={() => setCurrentStep(1)}
+                                        type="button"
+                                        className="fixed bottom-4 left-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                             className="bi bi-arrow-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                                        </svg>
+
+                                    </button>
+                                </div>
+
+
                             </form>
                         </div>
                     </div>
@@ -207,7 +250,7 @@ export function RegisterStep1() {
                 {userType === 'freelancer' && (
 
                     <div className={`w-full max-w-md bg-white p-8 rounded shadow-lg`}>
-                        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center"></h2>
+                    <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center"></h2>
                         <div className="w-full bg-white m-auto p-8 rounded shadow">
 
                             {/* Voller Name */}
@@ -305,17 +348,28 @@ export function RegisterStep1() {
                                 </button>
                             </div>
 
+
+                            {/* Step-Back-Button */}
+                            <div className="mt-6">
+                                <button
+                                    onClick={() => setCurrentStep(1)}
+                                    type="button"
+                                    className="fixed bottom-4 left-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         className="bi bi-arrow-left" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                                    </svg>
+
+                                </button>
+                            </div>
+
+
                         </div>
 
 
-
                         {/* Services */}
-
-
-
-
-
-
 
 
                     </div>
@@ -323,7 +377,7 @@ export function RegisterStep1() {
                 )};
 
 
-                    </div>
+            </div>
 
         </div>
 
