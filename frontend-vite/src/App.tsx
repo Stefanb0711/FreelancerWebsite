@@ -1,6 +1,6 @@
 import React from 'react';
 import {Login } from './auth/Login';
-import {Register } from './auth/Register';
+import {RegisterStep1 } from './auth/RegisterStep1.tsx';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route, Link} from 'react-router-dom';
@@ -15,12 +15,13 @@ function App() {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/login">Login</Link>
-        <Link to="/register">Register</Link>
+        <Link to="/register/step1">Register</Link>
       </nav>
         <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
+            <Route path='/register/step1' element={<RegisterStep1 />} />
+
         </Routes>
 
     </BrowserRouter>
