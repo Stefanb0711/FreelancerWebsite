@@ -2,6 +2,8 @@ import { gql } from '@apollo/client';
 import {useQuery } from '@apollo/client';
 import client from "../../apollo-client.ts";
 import {GraphQLClient} from "graphql-request";
+import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
+import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
 
 class AuthService {
 
@@ -26,15 +28,41 @@ class AuthService {
     }
 
 
-    public RegisterUser() {
+    public async RegisterCustomer(registrationData: RegisterCustomerModel | RegisterFreelancerModel, userType: string) {
 
-        const REGISTER_USER = gql`
-            mutation RegisterUser($input: RegisterUserInput!) {
-            registerUser(input: $input) {
+
+        const REGISTER_CUSTOMER = gql`
+            mutation RegisterUser($registrationData: RegisterUserInput!) {
+                registerUser(registrationData: $registrationData) {
+                    message
+                    success
+                }
             }
          `;
+
+        const variables = {
+            registrationData: registrationData,
+            userType: userType
+        }
+
+        try {
+            const result = await client.mutate({
+                mutation: REGISTER_CUSTOMER,
+                variables: variables
+            });
+            return result;
+        } catch (error) {
+            console.log("Error bei RegisterCustomer: ", error);
+        }
+
     }
 
+    public async RegisterFreelancer() {
+
+        const REGISTER_FREELANCER = gql`
+        mutation RegisterUser($registrationData: RegisterUserInput!) {}
+         `
+    }
 
     public async HelloQuery() {
 

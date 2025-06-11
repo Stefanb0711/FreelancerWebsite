@@ -37,6 +37,8 @@ export function RegisterStep1() {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
 
+    const [errorMessages, setErrorMessages] = useState<string | null>(null);
+
     const [userType , setUserType] = useState<string | null>(null);
 
 
@@ -340,7 +342,7 @@ export function RegisterStep1() {
 
                             {/* Registrieren-Button */}
                             <div className="mt-6">
-                                <button
+                                <button onClick={}
                                     type="submit"
                                     className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
