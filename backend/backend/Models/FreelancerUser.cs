@@ -14,4 +14,6 @@ public class FreelancerUser
     public Service[] Services { get; set; }
     
     public string Password;
+    
+    public string? PasswordConfirm;
 }

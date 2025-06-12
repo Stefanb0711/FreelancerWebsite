@@ -60,7 +60,7 @@ builder.Services.AddSingleton<MongoDbService>(sp =>
 
 
 builder.Services.AddSingleton<JwtTokenService>();
-
+builder.Services.AddSingleton<AuthenticationService>();
 
 
 
