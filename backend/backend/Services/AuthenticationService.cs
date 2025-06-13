@@ -30,7 +30,7 @@ public class AuthenticationService
 
 
 
-    public async Task<Response> RegisterCustomerUser(CustomerUser customerUser)
+    public async Task<Response> RegisterCustomerUser(RegisterInput customerUser)
     {
                 Console.WriteLine("User is Customer");
 
@@ -39,7 +39,7 @@ public class AuthenticationService
                     customerUser.PasswordConfirm == "")
                 {
 
-
+                
                     return new Response
                     {
                         Message = "Bitte füllen Sie alle Felder aus",
@@ -88,7 +88,7 @@ public class AuthenticationService
                     string hashedPassword = passwordHasher.HashPassword(null, customerUser.Password);
 
 
-                    var newFreelancerUser = new CustomerUser()
+                    var newCustomerUser = new CustomerUser()
                     {
                         Id = ObjectId.GenerateNewId().ToString(),
                         Username = customerUser.Username,
@@ -96,12 +96,14 @@ public class AuthenticationService
                         Password = customerUser.Password,
                     };
 
-                    _customerUsers.InsertOneAsync(newFreelancerUser);
+                    await _customerUsers.InsertOneAsync(newCustomerUser);
 
                     return new Response
                     {
-
+                        Message = "Customer erfolgreich registriert",
+                        Success = true
                     };
+                    
                 } catch (Exception e)
                 {
                     return new Response
@@ -112,7 +114,7 @@ public class AuthenticationService
                 }
     }
 
-    public async Task<Response> RegisterFreelancerUser(FreelancerUser freelancerUser)
+    public async Task<Response> RegisterFreelancerUser(RegisterInput freelancerUser)
     {
         Console.WriteLine("User is Freelancer: ", freelancerUser.Username);
 
@@ -403,6 +405,8 @@ public class AuthenticationService
                 
                 
             }
+             
+             
             
         }
         catch (Exception e)

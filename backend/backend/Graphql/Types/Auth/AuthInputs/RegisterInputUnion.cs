@@ -1,13 +1,18 @@
 using backend.Graphql.Types.Auth.AuthInputs;
 using backend.Models;
 using MongoDB.Bson;
+using System.Text.Json.Serialization;
 
 
 namespace backend.Graphql.Types.Auth.AuthInputs;
 
 //Abstract class kann nicht direkt instaanziert werden
 //Erlaubt, dass ein Feld mehr als nur einen Typ zurückgeben kann
-[UnionType]
+
+
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "__type")]
+[JsonDerivedType(typeof(RegisterCustomerInput), "RegisterCustomerInput")]
+[JsonDerivedType(typeof(RegisterFreelancerInput), "RegisterFreelancerInput")]
 public abstract class RegisterInputUnion
 {
     

@@ -7,6 +7,7 @@ using backend.Graphql.Types;
 using System.Threading.Tasks;
 using System;
 using MongoDB.Driver;
+using System.Text.Json.Serialization;
 
 
 namespace backend.Graphql.Mutations;
@@ -17,12 +18,12 @@ public class RootMutation
     private readonly IMongoCollection<FreelancerUser> _freelancerUsers;
     private readonly IMongoCollection<CustomerUser> _customerUsers;
     
-    //private readonly AuthenticationService _authenticationService;
+    private readonly AuthenticationService _authenticationService;
 
     
-    public RootMutation(/*AuthenticationService authenticationService,*/ MongoDbService mongoDbService)
+    public RootMutation(AuthenticationService authenticationService, MongoDbService mongoDbService)
     {
-        //_authenticationService = authenticationService;
+        _authenticationService = authenticationService;
         
         _customerUsers = mongoDbService.GetCollection<CustomerUser>("customerUser");
         _freelancerUsers = mongoDbService.GetCollection<FreelancerUser>("freelancerUser");
@@ -46,68 +47,32 @@ public class RootMutation
 
 
     [GraphQLName("register")]
-    public async Task<Response> RegisterUser(RegisterInputUnion registerData, [Service] AuthenticationService authenticationService)
+    public async Task<Response> RegisterUser(RegisterInput registerData)
     {
-        /*
-        if (registerData is RegisterCustomerInput registerCustomerDataInput)
+        if (registerData.InputType == "Customer")
         {
-            return new Response
-            {
-                Message = "",
-                Success = true
-            };
+            var result = await _authenticationService.RegisterCustomerUser(registerData);
+            
+            
+            return result;
+            
+            
+        } else if (registerData.InputType == "Freelancer")
+        {
 
-        } else if (registerData is RegisterFreelancerInput registerFreelancerDataInput)
-        {
-            return new Response
-            {
-                Message = "",
-                Success = true
-            };
+            var result = await _authenticationService.RegisterFreelancerUser(registerData);
+
+            return result;
+            
         }
-        else
-        {
-            return new Response
-            {
-                Message = "",
-                Success = true
-            };
-        }
-        */
-
-        return registerData switch
-        {
-            RegisterCustomerInput customer =>
-                await authenticationService.RegisterCustomerUser(new CustomerUser
-                {
-                    Id = customer.Id,
-                    Username = customer.Username,
-                    Email = customer.Email,
-                    Password = customer.Password,
-                }),
-
-            RegisterFreelancerInput freelancer =>
-                await authenticationService.RegisterFreelancerUser(new FreelancerUser
-                {
-                    Id = freelancer.Id,
-                    Username = freelancer.Username,
-                    Email = freelancer.Email,
-                    Biography = freelancer.Biography,
-                    Password = freelancer.Password,
-                }),
-
-            _ => new Response
-            {
-                Success = false,
-                Message = "Invalid input type"
-            }
-        };
         
         return new Response
         {
             Message = "",
             Success = true
         };
+        
+      
         
     }
     
