@@ -159,6 +159,8 @@ public class AuthenticationService
         
             string hashedPassword = passwordHasher.HashPassword(null, freelancerUser.Password);
 
+            
+            Console.WriteLine("Gehastes Passwort" + hashedPassword);
 
             var newFreelancerUser = new FreelancerUser()
             {
@@ -170,6 +172,8 @@ public class AuthenticationService
                 Languages = freelancerUser.Languages,
                 Services = freelancerUser.Services
             };
+            
+            Console.WriteLine("Neuer Freelancerusertyp umgewandelt" + newFreelancerUser.Id);
         
             await _freelancerUsers.InsertOneAsync(newFreelancerUser);
 
@@ -191,6 +195,8 @@ public class AuthenticationService
             
           
         }
+        
+        
         
     }
     

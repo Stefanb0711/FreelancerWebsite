@@ -19,11 +19,14 @@ public class RootMutation
     private readonly IMongoCollection<CustomerUser> _customerUsers;
     
     private readonly AuthenticationService _authenticationService;
-
+    private readonly JwtTokenService _jwtTokenService;
     
-    public RootMutation(AuthenticationService authenticationService, MongoDbService mongoDbService)
+    public RootMutation(AuthenticationService authenticationService,
+        MongoDbService mongoDbService,
+        JwtTokenService jwtTokenService)
     {
         _authenticationService = authenticationService;
+        _jwtTokenService = jwtTokenService;
         
         _customerUsers = mongoDbService.GetCollection<CustomerUser>("customerUser");
         _freelancerUsers = mongoDbService.GetCollection<FreelancerUser>("freelancerUser");
@@ -35,6 +38,150 @@ public class RootMutation
     {
         
         //await _authenticationService.LoginUser(loginData);
+
+        if (loginData == null)
+        {
+            
+            return new LoginResponse
+            {
+                Message = "Bitte geben Sie einen Benutzernamen und ein Passwort ein",
+                Success = false,
+                Token = null
+            };
+            
+        }
+      
+        
+        try {
+            var freelancerFilter = Builders<FreelancerUser>.Filter.Or(
+                Builders<FreelancerUser>.Filter.Eq(user => user.Username, loginData.UsernameOrEmail),
+                Builders<FreelancerUser>.Filter.Eq(user => user.Email, loginData.UsernameOrEmail)
+            );
+
+            var customerFilter = Builders<CustomerUser>.Filter.Or(
+                Builders<CustomerUser>.Filter.Eq(user => user.Username, loginData.UsernameOrEmail),
+                Builders<CustomerUser>.Filter.Eq(user => user.Email, loginData.UsernameOrEmail)
+            );
+            
+
+            if (freelancerFilter != null)
+            {
+                var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
+                //var customerUser = await _customerUsers.Find()
+
+                if (!string.IsNullOrEmpty(loginData.Password))
+                {
+                    var passwordHasher = new PasswordHasher<FreelancerUser>();
+                    var result = passwordHasher.VerifyHashedPassword(
+                        freelancerUser,
+                        freelancerUser.Password,
+                        loginData.Password);
+                    
+                    
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        
+                        Console.WriteLine("Sie sind erfolgreich eingeloggt");
+
+                        var token = _jwtTokenService.GenerateToken(freelancerUser.Id, freelancerUser.Username,
+                            loginData.Password);
+                        
+                        
+                        return new LoginResponse
+                        {
+                            Message = "Login erfolgreich",
+                            Success = true,
+                            Token = token
+                        };
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                else
+                {
+                    
+                    return new LoginResponse
+                    {
+                        Message = "Das Passwortfeld ist nicht ausgefüllt",
+                        Success = false,
+                        Token = null
+                    };
+                }
+
+            } else if (customerFilter != null)
+            {
+                var customerUser = await _customerUsers.Find(customerFilter).FirstOrDefaultAsync();
+                //var customerUser = await _customerUsers.Find()
+
+                if (!string.IsNullOrEmpty(loginData.Password))
+                {
+                    var passwordHasher = new PasswordHasher<CustomerUser>();
+                    
+                    var result = passwordHasher.VerifyHashedPassword(
+                        customerUser,
+                        customerUser.Password,
+                        loginData.Password);
+                    
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        
+                        Console.WriteLine("Sie sind erfolgreich eingeloggt");
+
+                        var token = _jwtTokenService.GenerateToken(customerUser.Id, customerUser.Username,
+                            loginData.Password);
+                        
+                        
+                        return new LoginResponse
+                        {
+                            Message = "Login erfolgreich",
+                            Success = true,
+                            Token = token
+                        };
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                else
+                {
+                    
+                    return new LoginResponse
+                    {
+                        Message = "Das Passwortfeld ist nicht ausgefüllt",
+                        Success = false,
+                        Token = null
+                    };
+                }
+                
+                
+            }
+            else
+            {
+                return new LoginResponse
+                {
+                    Message = "Benutzer nicht gefunden",
+                    Success = false,
+                    Token = null
+                };
+            }
+            
+            
+        }
+        catch (Exception e)
+        {
+            
+            return new LoginResponse
+            {
+                Message = "Fehler beim Login",
+                Success = false,
+                Token = null
+            };
+        }
         
         return new LoginResponse
         {
@@ -55,7 +202,6 @@ public class RootMutation
             
             
             return result;
-            
             
         } else if (registerData.InputType == "Freelancer")
         {
