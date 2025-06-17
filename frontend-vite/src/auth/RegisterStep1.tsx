@@ -3,6 +3,7 @@ import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
 import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
 import AuthService from "../services/AuthService.service.ts";
 import {useNavigate} from "react-router-dom";
+import type {RegisterDataModel} from "../models/RegisterData.model.ts";
 
 export function RegisterStep1() {
 
@@ -11,8 +12,9 @@ export function RegisterStep1() {
 
     const emptyRegisterUser: RegisterCustomerModel | RegisterFreelancerModel = useState();
 
-    let [registerForm, setRegisterForm] = useState<RegisterCustomerModel | RegisterFreelancerModel | null>();
+    let [registerForm, setRegisterForm] = useState<RegisterDataModel | null>(null);
 
+    /*
     let [customerRegisterForm, setCustomerRegisterForm] = useState<RegisterCustomerModel>({
         username: "",
         email: "",
@@ -32,6 +34,8 @@ export function RegisterStep1() {
             price: 0
         }
     });
+    */
+
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -42,6 +46,7 @@ export function RegisterStep1() {
     const [userType , setUserType] = useState<string | null>(null);
 
 
+    //Setzt den nächsten Schritt für die Anmeldung
     const handleNext = () => {
         if (currentStep === 1 && selectedOption) {
             setCurrentStep(2);
@@ -54,26 +59,107 @@ export function RegisterStep1() {
     const onSettingUserTypeToFreelancer = () => {
 
         setUserType('freelancer');
+
+        setRegisterForm({
+            inputType: "Freelancer",
+            username: "",
+            email: "",
+            password: "",
+            passwordConfirm: "",
+            biography: "",
+            languages: "",
+            services: {
+                name: '',
+                price: 0
+            }
+        });
+
         console.log('Current Usertype: ', userType);
+
+        setCurrentStep(2);
+
     }
 
-    const onSubmit = ()=> {
+    const onSettingUserTypeToCustomer = () => {
+
+        setUserType('customer');
+        console.log('Current Usertype: ', userType);
+
+        setRegisterForm({
+            inputType: "Customer",
+            username: "",
+            email: "",
+            password: "",
+            passwordConfirm: ""
+        });
+
+
+        setCurrentStep(2);
+    }
+
+
+
+    const onSetForm = () => {
+
+        if (userType === 'freelancer') {
+            setRegisterForm({
+                inputType: "Freelancer",
+                username: "",
+                email: "",
+                password: "",
+                passwordConfirm: "",
+                biography: "",
+                languages: "",
+                services: {
+                    name: '',
+                    price: 0
+                }
+            });
+        } else if (userType === 'customer') {
+            setRegisterForm({
+                inputType: "Customer",
+                username: "",
+                email: "",
+                password: "",
+                passwordConfirm: ""
+            });
+        }
 
     }
+
+    const onSubmit = () => {
+
+    }
+
 
     useEffect(() => {
 
         if (userType === 'freelancer') {
             setRegisterForm({
-
-            } as RegisterFreelancerModel);
+                inputType: "Freelancer",
+                username: "",
+                email: "",
+                password: "",
+                passwordConfirm: "",
+                biography: "",
+                languages: "",
+                services: {
+                    name: '',
+                    price: 0
+                }
+            });
         } else if (userType === 'customer') {
             setRegisterForm({
-
-            } as RegisterCustomerModel);
+                inputType: "Customer",
+                username: "",
+                email: "",
+                password: "",
+                passwordConfirm: ""
+            });
         }
+        console.log('Usertype: ', userType);
 
-    }, []);
+    }, [userType]);
 
     return (
         <div>
@@ -90,15 +176,15 @@ export function RegisterStep1() {
                         `}>
                         {/* Container für beide Divs */}
                         <div className="flex space-x-4">
-                            <div onClick={() => setUserType('freelancer')} className="border bg-white rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center
+                            <div onClick={() => onSettingUserTypeToFreelancer()} className="border bg-white rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center
                             ">
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">Freelancer</h2>
                                 <p className="text-sm text-gray-600 text-center">Das ist ein kurzer Text für das erste Div.</p>
                             </div>
 
                             {/* Zweites Div */}
-                            <div  className="borderbg-white rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center"
-                                  onClick={() => setUserType('customer')}>
+                            <div  className=" rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center"
+                                  onClick={() => onSettingUserTypeToCustomer()}>
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">Customer</h2>
                                 <p className="text-sm text-gray-600 text-center">Hier ist ein Text für das zweite Div.</p>
                             </div>
@@ -128,6 +214,8 @@ export function RegisterStep1() {
                                         d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
                                     />
                                 </svg>
+
+
                             </button>
                         </div>
 
@@ -159,8 +247,8 @@ export function RegisterStep1() {
                                         Vollständiger Name
                                     </label>
                                     <input
-                                        onChange={(e) => setCustomerRegisterForm({ ...customerRegisterForm, username: e.target.value })}
-                                        value={customerRegisterForm.username}
+                                        onChange={(e) => setRegisterForm({ ...registerForm, username: e.target.value })}
+                                        value={registerForm.username}
                                         type="text"
                                         id="fullName"
                                         className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -173,8 +261,8 @@ export function RegisterStep1() {
                                     <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
                                         E-Mail-Adresse
                                     </label>
-                                    <input value={customerRegisterForm.email}
-                                           onChange={(e) => setCustomerRegisterForm({ ...customerRegisterForm, username: e.target.value })}
+                                    <input value={registerForm.email}
+                                           onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
                                            type="email"
                                            id="email"
                                            className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -188,8 +276,8 @@ export function RegisterStep1() {
                                         Passwort
                                     </label>
                                     <input
-                                        value={customerRegisterForm.password}
-                                        onChange={(e) => setCustomerRegisterForm({ ...customerRegisterForm, username: e.target.value })}
+                                        value={registerForm.password}
+                                        onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
                                         type="password"
                                         id="password"
                                         className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -203,8 +291,8 @@ export function RegisterStep1() {
                                         Passwort
                                     </label>
                                     <input
-                                        onChange={(e) => setCustomerRegisterForm({ ...customerRegisterForm, username: e.target.value })}
-                                        value={customerRegisterForm.passwordConfirm}
+                                        onChange={(e) => setRegisterForm({ ...registerForm, passwordConfirm: e.target.value })}
+                                        value={registerForm.passwordConfirm}
                                         type="password"
                                         id="password"
                                         className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -261,7 +349,7 @@ export function RegisterStep1() {
                                     Vollständiger Name
                                 </label>
                                 <input
-                                    value={freelancerRegisterForm.username}
+                                    value={registerForm.username}
                                     type="text"
                                     id="fullName"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -275,7 +363,7 @@ export function RegisterStep1() {
                                     E-Mail-Adresse
                                 </label>
                                 <input
-                                    value={freelancerRegisterForm.email}
+                                    value={registerForm.email}
                                     type="email"
                                     id="email"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -289,7 +377,7 @@ export function RegisterStep1() {
                                     Passwort
                                 </label>
                                 <input
-                                    value={freelancerRegisterForm.password}
+                                    value={registerForm.password}
                                     type="password"
                                     id="password"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -303,7 +391,7 @@ export function RegisterStep1() {
                                     Passwort Confirm
                                 </label>
                                 <input
-                                    value={freelancerRegisterForm.passwordConfirm}
+                                    value={registerForm.passwordConfirm}
                                     type="password"
                                     id="password"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -317,7 +405,7 @@ export function RegisterStep1() {
                                     Biography
                                 </label>
                                 <input
-                                    value={freelancerRegisterForm.biography}
+                                    value={registerForm.biography}
                                     type="password"
                                     id="password"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -331,7 +419,7 @@ export function RegisterStep1() {
                                     Languages
                                 </label>
                                 <input
-                                    value={freelancerRegisterForm.languages}
+                                    value={registerForm.languages }
                                     type="text"
                                     id="languages"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -342,7 +430,7 @@ export function RegisterStep1() {
 
                             {/* Registrieren-Button */}
                             <div className="mt-6">
-                                <button onClick={}
+                                <button onClick={() => onSubmit()}
                                     type="submit"
                                     className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
