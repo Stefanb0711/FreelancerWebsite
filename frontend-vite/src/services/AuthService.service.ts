@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client';
 import {useQuery } from '@apollo/client';
-import client from "../../apollo-client.ts";
+//import client from "../../apollo-client.ts";
 import {GraphQLClient} from "graphql-request";
 import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
 import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
+import type {RegisterDataModel} from "../models/RegisterData.model.ts";
 
 class AuthService {
 
@@ -27,29 +28,39 @@ class AuthService {
 
     }
 
+    private client: GraphQLClient = new GraphQLClient('https://localhost:44325/graphql');
 
-    public async RegisterCustomer(registrationData: RegisterCustomerModel | RegisterFreelancerModel, userType: string) {
 
+    public async RegisterUser(registrationData: RegisterDataModel | null) {
 
-        const REGISTER_CUSTOMER = gql`
+        /*
+        const REGISTER_USER = gql`
             mutation RegisterUser($registrationData: RegisterUserInput!) {
                 registerUser(registrationData: $registrationData) {
                     message
                     success
                 }
             }
-         `;
+        `;*/
+
+        const REGISTER_USER = `
+            mutation RegisterUser($registrationData: RegisterInput!) {
+                register(registrationData: $registrationData) {
+                    message
+                    success
+                }
+            }
+        `;
+
 
         const variables = {
-            registrationData: registrationData,
-            userType: userType
+            registrationData: registrationData
         }
 
         try {
-            const result = await client.mutate({
-                mutation: REGISTER_CUSTOMER,
-                variables: variables
-            });
+            const result = await this.client.request(
+                REGISTER_USER, variables
+            );
             return result;
         } catch (error) {
             console.log("Error bei RegisterCustomer: ", error);
@@ -57,12 +68,15 @@ class AuthService {
 
     }
 
+    /*
     public async RegisterFreelancer() {
 
         const REGISTER_FREELANCER = gql`
-        mutation RegisterUser($registrationData: RegisterUserInput!) {}
+        mutation RegisterUser($registrationData: RegisterUserInput!) {
+            
+        }
          `
-    }
+    };*/
 
     public async HelloQuery() {
 
@@ -77,7 +91,7 @@ class AuthService {
         `;
 
 
-            const result = await client.query({
+            const result = await this.client.query({
                 query: QUERY_HELLO,
             });
 

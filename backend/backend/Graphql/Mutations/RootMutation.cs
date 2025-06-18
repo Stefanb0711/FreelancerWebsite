@@ -194,19 +194,19 @@ public class RootMutation
 
 
     [GraphQLName("register")]
-    public async Task<Response> RegisterUser(RegisterInput registerData)
+    public async Task<Response> RegisterUser(RegisterInput registrationData)
     {
-        if (registerData.InputType == "Customer")
+        if (registrationData.InputType == "Customer")
         {
-            var result = await _authenticationService.RegisterCustomerUser(registerData);
+            var result = await _authenticationService.RegisterCustomerUser(registrationData);
             
             
             return result;
             
-        } else if (registerData.InputType == "Freelancer")
+        } else if (registrationData.InputType == "Freelancer")
         {
 
-            var result = await _authenticationService.RegisterFreelancerUser(registerData);
+            var result = await _authenticationService.RegisterFreelancerUser(registrationData);
 
             return result;
             

@@ -4,6 +4,9 @@ import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.t
 import AuthService from "../services/AuthService.service.ts";
 import {useNavigate} from "react-router-dom";
 import type {RegisterDataModel} from "../models/RegisterData.model.ts";
+import {GraphQLClient} from "graphql-request";
+
+
 
 export function RegisterStep1() {
 
@@ -35,6 +38,9 @@ export function RegisterStep1() {
         }
     });
     */
+
+
+
 
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -93,6 +99,8 @@ export function RegisterStep1() {
             passwordConfirm: ""
         });
 
+        console.log('Current Form: ', registerForm);
+
 
         setCurrentStep(2);
     }
@@ -125,13 +133,20 @@ export function RegisterStep1() {
             });
         }
 
+        console.log("CurrentRegiseterForm", registerForm);
+        console.log('Usertype: ', userType);
+
     }
 
-    const onSubmit = () => {
 
+    const onSubmit= async ()  => {
+
+        const result = await AuthService.RegisterUser(registerForm);
+
+        console.log('Result of SubmitForm: ', result);
     }
 
-
+    /*
     useEffect(() => {
 
         if (userType === 'freelancer') {
@@ -160,6 +175,8 @@ export function RegisterStep1() {
         console.log('Usertype: ', userType);
 
     }, [userType]);
+     */
+
 
     return (
         <div>
@@ -349,6 +366,7 @@ export function RegisterStep1() {
                                     Vollständiger Name
                                 </label>
                                 <input
+                                    onChange={(e) => setRegisterForm({...registerForm, username: e.target.value })}
                                     value={registerForm.username}
                                     type="text"
                                     id="fullName"
@@ -364,6 +382,7 @@ export function RegisterStep1() {
                                 </label>
                                 <input
                                     value={registerForm.email}
+                                    onChange={(e) => setRegisterForm({...registerForm, email: e.target.value })}
                                     type="email"
                                     id="email"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -378,6 +397,7 @@ export function RegisterStep1() {
                                 </label>
                                 <input
                                     value={registerForm.password}
+                                    onChange={(e) => setRegisterForm({...registerForm, password: e.target.value})}
                                     type="password"
                                     id="password"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -391,6 +411,7 @@ export function RegisterStep1() {
                                     Passwort Confirm
                                 </label>
                                 <input
+                                    onChange={(e) => setRegisterForm({...registerForm, passwordConfirm: e.target.value })}
                                     value={registerForm.passwordConfirm}
                                     type="password"
                                     id="password"
@@ -405,6 +426,7 @@ export function RegisterStep1() {
                                     Biography
                                 </label>
                                 <input
+                                    onChange={(e) => setRegisterForm({...registerForm, biography: e.target.value })}
                                     value={registerForm.biography}
                                     type="password"
                                     id="password"
@@ -420,6 +442,7 @@ export function RegisterStep1() {
                                 </label>
                                 <input
                                     value={registerForm.languages }
+                                    onChange={(e) => setRegisterForm({...registerForm, languages: e.target.value })}
                                     type="text"
                                     id="languages"
                                     className="w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
