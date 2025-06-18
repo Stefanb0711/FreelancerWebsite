@@ -196,24 +196,24 @@ export function RegisterStep1() {
                             <div onClick={() => onSettingUserTypeToFreelancer()} className="border bg-white rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center
                             ">
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">Freelancer</h2>
-                                <p className="text-sm text-gray-600 text-center">Das ist ein kurzer Text für das erste Div.</p>
+                                <!-- <p className="text-sm text-gray-600 text-center">Das ist ein kurzer Text für das erste Div.</p> -->
                             </div>
 
                             {/* Zweites Div */}
-                            <div  className=" rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center"
+                            <div  className="border rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center"
                                   onClick={() => onSettingUserTypeToCustomer()}>
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">Customer</h2>
-                                <p className="text-sm text-gray-600 text-center">Hier ist ein Text für das zweite Div.</p>
+                                <!-- <p className="text-sm text-gray-600 text-center">Hier ist ein Text für das zweite Div.</p> -->
                             </div>
 
                         </div>
 
-                        <button onClick={() => setCurrentStep(2)}>Next</button>
 
 
                         {/* Step-Next-Button */}
                         <div>
                             <button
+                                id={'stepNextButton'}
                                 onClick={() => setCurrentStep(2)}
                                 type="button"
                                 className="fixed bottom-16 right-6 bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 z-50"
@@ -243,6 +243,7 @@ export function RegisterStep1() {
             )}
 
 
+
             <div id={'registrationFormular'} className={`${userType !== null ? 'block' : 'hidden'}
                 ${currentStep === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}
                 transition-all duration-500 ease-in-out flex items-center justify-center min-h-screen bg-gray-100
@@ -252,7 +253,7 @@ export function RegisterStep1() {
 
 
 
-                    <div className="w-full max-w-md bg-white p-8 rounded shadow-lg">
+                    <div className="w-full max-w-md bg-white p-8 rounded shadow-lg"  >
                         <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
                             <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
                                 Registrieren
