@@ -129,8 +129,13 @@ public class AuthenticationService
                 Success = false
             };
             
-            
-            
+        } else if(freelancerUser.Password != freelancerUser.PasswordConfirm)
+        {
+            return new Response
+            {
+                Message = "Passwörter stimmen nicht überein",
+                Success = false
+            };
         }
 
 
@@ -154,7 +159,8 @@ public class AuthenticationService
 
                
             }
-
+            
+            
             var passwordHasher = new PasswordHasher<object>();
         
             string hashedPassword = passwordHasher.HashPassword(null, freelancerUser.Password);

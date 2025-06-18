@@ -15,5 +15,4 @@ public class FreelancerUser
     
     public string Password;
     
-    public string? PasswordConfirm;
 }
