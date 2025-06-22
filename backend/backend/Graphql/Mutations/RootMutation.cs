@@ -35,7 +35,7 @@ public class RootMutation
 
     [GraphQLName("login")]
     public async Task<LoginResponse> LoginUser(LoginInput loginData)
-    {
+    {           
         
         //await _authenticationService.LoginUser(loginData);
 

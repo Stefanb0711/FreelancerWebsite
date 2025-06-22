@@ -1,15 +1,30 @@
 import React, {useState, useEffect} from 'react';
 import AuthService from "../services/AuthService.service.ts";
 import type {LoginFormModel} from "../models/LoginForm.model.ts";
+import {useNavigate} from "react-router";
 
 export function Login() {
 
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
 
+    const navigate = useNavigate();
 
     const onSubmit = async ()  => {
 
-        await AuthService.LoginUser(loginForm);
+        const result: any = await AuthService.LoginUser(loginForm);
+
+        console.log('Result of LoginUser Message: ', result.login.message);
+
+
+        if (result.login.success === true) {
+            navigate('/');
+
+        } else if (result.login.success === false) {
+            setErrorMessage(result.login.message);
+
+            console.log('Errormessage: ', result.login.message);
+        }
 
         console.log('LoginForm: ', loginForm);
     };
@@ -63,18 +78,24 @@ export function Login() {
 
 
 
-                        {/* Registrieren-Button */}
+                        {/* Login-Button */}
                         <div className="mt-6">
                             <button
                                 onClick={() => onSubmit()}
-                                type="submit"
+                                type="button"
                                 className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 Einloggen
                             </button>
                         </div>
 
+                        { errorMessage && (
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-auto my-4 text-center" role="alert">
+                                <strong className="font-bold m-auto">Fehler:</strong>
+                                <p className="block sm:inline ml-2 m-auto">{errorMessage}</p>
+                            </div>
 
+                        )}
 
                     </form>
                 </div>
