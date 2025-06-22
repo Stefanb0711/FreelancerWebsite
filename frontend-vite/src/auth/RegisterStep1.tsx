@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
 import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
 import AuthService from "../services/AuthService.service.ts";
-import {useNavigate} from "react-router-dom";
 import type {RegisterDataModel} from "../models/RegisterData.model.ts";
 import {GraphQLClient} from "graphql-request";
-
+import { useNavigate } from "react-router";
 
 
 export function RegisterStep1() {
@@ -41,8 +40,6 @@ export function RegisterStep1() {
 
 
 
-
-
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
@@ -61,6 +58,11 @@ export function RegisterStep1() {
         }
     }
 
+
+    useEffect(() => {
+        const resultHello = AuthService.HelloQuery();
+        console.log('Result of HelloQuery: ', resultHello);
+    }, []);
 
     const onSettingUserTypeToFreelancer = () => {
 
@@ -85,6 +87,8 @@ export function RegisterStep1() {
         setCurrentStep(2);
 
     }
+
+
 
     const onSettingUserTypeToCustomer = () => {
 
@@ -141,10 +145,21 @@ export function RegisterStep1() {
 
     const onSubmit= async ()  => {
 
-        const result = await AuthService.RegisterUser(registerForm);
+        const result: any = await AuthService.RegisterUser(registerForm);
+
+        if (result.register.success === true) {
+            navigate('/');
+        } else if (result.register.success === false) {
+            console.log('Error: ', result.register.message);
+            setErrorMessages(result.register.message);
+        } else {
+            console.log('Ein anderer Fehler');
+        }
 
         console.log('Result of SubmitForm: ', result);
     }
+
+
 
     /*
     useEffect(() => {
@@ -196,14 +211,12 @@ export function RegisterStep1() {
                             <div onClick={() => onSettingUserTypeToFreelancer()} className="border bg-white rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center
                             ">
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">Freelancer</h2>
-                                <!-- <p className="text-sm text-gray-600 text-center">Das ist ein kurzer Text für das erste Div.</p> -->
                             </div>
 
                             {/* Zweites Div */}
                             <div  className="border rounded-lg shadow-lg p-6 w-48 h-48 flex flex-col justify-center items-center"
                                   onClick={() => onSettingUserTypeToCustomer()}>
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">Customer</h2>
-                                <!-- <p className="text-sm text-gray-600 text-center">Hier ist ein Text für das zweite Div.</p> -->
                             </div>
 
                         </div>
@@ -248,6 +261,7 @@ export function RegisterStep1() {
                 ${currentStep === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}
                 transition-all duration-500 ease-in-out flex items-center justify-center min-h-screen bg-gray-100
             `}>
+
 
                 {userType === 'customer' && (
 
@@ -322,7 +336,7 @@ export function RegisterStep1() {
                                 <div className="mt-6">
                                     <button
                                         onClick={() => onSubmit()}
-                                        type="submit"
+                                        type="button"
                                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         Registrieren

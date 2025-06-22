@@ -5,13 +5,15 @@ import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
 import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
 import type {RegisterDataModel} from "../models/RegisterData.model.ts";
 import type {LoginFormModel} from "../models/LoginForm.model.ts";
-import {c} from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
+
 
 class AuthService {
 
     private static instance: AuthService;
 
     //private client: GraphQLClient;
+
+    private client: GraphQLClient = new GraphQLClient('https://localhost:7115/graphql');
 
 
     private constructor() {
@@ -27,14 +29,15 @@ class AuthService {
 
 
 
-    public LoginUser(loginData: LoginFormModel) {
+    public async LoginUser(loginData: LoginFormModel) {
 
         const LOGIN_USER = `
-            mutation LoginUser($loginData: LoginFormModel) {
-                loginUser(loginData: $loginData) {
-                    message
-                    success
-               }
+            mutation LoginUser($loginData: LoginInput!) {
+              login(loginData: $loginData ) {
+                message
+                success
+                token
+              }
             }
         `;
 
@@ -43,19 +46,21 @@ class AuthService {
         };
 
         try {
+
            const result = await this.client.request(
                LOGIN_USER, variables
            );
+
+           console.log("Result of LoginUser: ", result);
+
            return result;
 
-        } catch (Exception e) {
+        } catch (e) {
             console.log("Error bei RegisterCustomer: ", e);
 
         }
 
     }
-
-    private client: GraphQLClient = new GraphQLClient('https://localhost:44325/graphql');
 
 
     public async RegisterUser(registrationData: RegisterDataModel | null) {
@@ -109,7 +114,7 @@ class AuthService {
 
 
         try {
-            const QUERY_HELLO = gql`
+            const QUERY_HELLO = `
             query Hello {
                 hello {
                 hello 
@@ -118,14 +123,14 @@ class AuthService {
         `;
 
 
-            const result = await this.client.query({
-                query: QUERY_HELLO,
-            });
+        const result = await this.client.request(
+            QUERY_HELLO
+        );
 
-            console.log("Result of useQuery: ", result);
+        console.log("Result of useQuery: ", result);
 
 
-            return result.data.hello;
+        return result;
 
 
         } catch (error) {
