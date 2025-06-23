@@ -44,7 +44,7 @@ export function RegisterStep1() {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
 
-    const [errorMessages, setErrorMessages] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const [userType , setUserType] = useState<string | null>(null);
 
@@ -147,11 +147,13 @@ export function RegisterStep1() {
 
         const result: any = await AuthService.RegisterUser(registerForm);
 
+        console.log("Result: ", result);
+
         if (result.register.success === true) {
             navigate('/');
         } else if (result.register.success === false) {
             console.log('Error: ', result.register.message);
-            setErrorMessages(result.register.message);
+            setErrorMessage(result.register.message);
         } else {
             console.log('Ein anderer Fehler');
         }
@@ -493,6 +495,14 @@ export function RegisterStep1() {
                                 </button>
                             </div>
 
+
+                            { errorMessage !== '' && (
+                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-auto my-4 text-center" role="alert">
+                                    <strong className="font-bold m-auto">Fehler:</strong>
+                                    <p className="block sm:inline ml-2 m-auto">{errorMessage}</p>
+                                </div>
+
+                            )}
 
                         </div>
 

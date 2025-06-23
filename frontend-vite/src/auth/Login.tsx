@@ -89,7 +89,7 @@ export function Login() {
                             </button>
                         </div>
 
-                        { errorMessage && (
+                        { errorMessage !== '' && (
                             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-auto my-4 text-center" role="alert">
                                 <strong className="font-bold m-auto">Fehler:</strong>
                                 <p className="block sm:inline ml-2 m-auto">{errorMessage}</p>

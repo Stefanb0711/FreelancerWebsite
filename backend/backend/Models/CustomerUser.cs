@@ -8,6 +8,5 @@ public class CustomerUser
     
     public string Password { get; set; }
     
-    public string PasswordConfirm { get; set; }
     
 }

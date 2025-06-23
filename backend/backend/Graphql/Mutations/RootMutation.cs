@@ -71,7 +71,13 @@ public class RootMutation
 
                 if (!string.IsNullOrEmpty(loginData.Password))
                 {
+                    
+                    
+                    
                     var passwordHasher = new PasswordHasher<FreelancerUser>();
+                    
+                   
+                    
                     var result = passwordHasher.VerifyHashedPassword(
                         freelancerUser,
                         freelancerUser.Password,

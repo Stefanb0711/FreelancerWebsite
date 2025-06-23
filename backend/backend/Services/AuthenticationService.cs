@@ -83,17 +83,18 @@ public class AuthenticationService
                         */
                     }
 
-                    var passwordHasher = new PasswordHasher<object>();
-
-                    string hashedPassword = passwordHasher.HashPassword(null, customerUser.Password);
-
+                    var passwordHasher = new PasswordHasher<RegisterInput>();
+                    
+                    
+                    string hashedPassword = passwordHasher.HashPassword(customerUser, customerUser.Password);
+                    Console.WriteLine("Gehastes Passwort" + hashedPassword);
 
                     var newCustomerUser = new CustomerUser()
                     {
                         Id = ObjectId.GenerateNewId().ToString(),
                         Username = customerUser.Username,
                         Email = customerUser.Email,
-                        Password = customerUser.Password,
+                        Password = hashedPassword,
                     };
 
                     await _customerUsers.InsertOneAsync(newCustomerUser);
@@ -161,9 +162,9 @@ public class AuthenticationService
             }
             
             
-            var passwordHasher = new PasswordHasher<object>();
+            var passwordHasher = new PasswordHasher<RegisterInput>();
         
-            string hashedPassword = passwordHasher.HashPassword(null, freelancerUser.Password);
+            string hashedPassword = passwordHasher.HashPassword(freelancerUser, freelancerUser.Password);
 
             
             Console.WriteLine("Gehastes Passwort" + hashedPassword);
@@ -173,7 +174,7 @@ public class AuthenticationService
                 Id = ObjectId.GenerateNewId().ToString(),
                 Username = freelancerUser.Username,
                 Email = freelancerUser.Email,
-                Password = freelancerUser.Password,
+                Password = hashedPassword,
                 Biography = freelancerUser.Biography,
                 Languages = freelancerUser.Languages,
                 Services = freelancerUser.Services
@@ -266,7 +267,7 @@ public class AuthenticationService
                         */
                     }
                 
-                    var passwordHasher = new PasswordHasher<object>();
+                    var passwordHasher = new PasswordHasher<RegisterInput>();
                 
                     string hashedPassword = passwordHasher.HashPassword(null, registerCustomerData.Password);
 
