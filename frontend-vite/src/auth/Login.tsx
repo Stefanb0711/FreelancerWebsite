@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import AuthService from "../services/AuthService.service.ts";
 import type {LoginFormModel} from "../models/LoginForm.model.ts";
 import {useNavigate} from "react-router";
+import authService from "../services/AuthService.service.ts";
 
 export function Login() {
 
@@ -9,6 +10,8 @@ export function Login() {
 
 
     const navigate = useNavigate();
+
+
 
     const onSubmit = async ()  => {
 
@@ -18,7 +21,12 @@ export function Login() {
 
 
         if (result.login.success === true) {
+
+            authService.authToken = result.login.token;
+            localStorage.setItem('authToken', result.login.token);
+
             navigate('/');
+            //window.location.reload();
 
         } else if (result.login.success === false) {
             setErrorMessage(result.login.message);
@@ -29,7 +37,7 @@ export function Login() {
         console.log('LoginForm: ', loginForm);
     };
 
-    const [loginForm, setLoginForm] = useState<LoginFormModel >({
+    const [loginForm, setLoginForm] = useState<LoginFormModel>({
         usernameOrEmail: "",
         password: ""
     });

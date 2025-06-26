@@ -5,6 +5,9 @@ import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
 import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
 import type {RegisterDataModel} from "../models/RegisterData.model.ts";
 import type {LoginFormModel} from "../models/LoginForm.model.ts";
+import {jwtDecode} from "jwt-decode";
+
+//import {useAuth} from '../context/AuthContext';
 
 
 class AuthService {
@@ -12,6 +15,9 @@ class AuthService {
     private static instance: AuthService;
 
     //private client: GraphQLClient;
+
+    public authToken: string | null = null;
+    public userLoggedIn: boolean = false;
 
     private client: GraphQLClient = new GraphQLClient('https://localhost:7115/graphql');
 
@@ -28,6 +34,35 @@ class AuthService {
     }
 
 
+    public logoutUser() {
+        localStorage.removeItem('authToken');
+        this.userLoggedIn = false;
+        this.authToken = null;
+        console.log('User logged out');
+
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('authToken');
+
+    }
+
+    isTokenValid(): boolean {
+        const token = this.getToken();
+        if (!token) {
+            return false; // Kein Token vorhanden
+        }
+
+        try {
+            const decodedToken: any = jwtDecode(token);
+            console.log('Decoded Token:', decodedToken);
+            const currentTime = Math.floor(Date.now() / 1000); // Aktuelle Zeit in Sekunden
+            return decodedToken.exp > currentTime; // Ist der Token gültig?
+        } catch (error) {
+            console.error('Ungültiger Token:', error);
+            return false;
+        }
+    };
 
     public async LoginUser(loginData: LoginFormModel) {
 

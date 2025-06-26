@@ -63,10 +63,12 @@ public class RootMutation
                 Builders<CustomerUser>.Filter.Eq(user => user.Email, loginData.UsernameOrEmail)
             );
             
+            var customerUser = await _customerUsers.Find(customerFilter).FirstOrDefaultAsync();
+            var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
 
-            if (freelancerFilter != null)
+            if (freelancerUser != null)
             {
-                var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
+                //var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
                 //var customerUser = await _customerUsers.Find()
 
                 if (!string.IsNullOrEmpty(loginData.Password))
@@ -119,11 +121,15 @@ public class RootMutation
 
             } else if (customerFilter != null)
             {
-                var customerUser = await _customerUsers.Find(customerFilter).FirstOrDefaultAsync();
+                
+                
                 //var customerUser = await _customerUsers.Find()
 
+                Console.WriteLine("User is Customer");
+                
                 if (!string.IsNullOrEmpty(loginData.Password))
                 {
+                    Console.WriteLine("Passwordfeld ist nicht leer");
                     var passwordHasher = new PasswordHasher<CustomerUser>();
                     
                     var result = passwordHasher.VerifyHashedPassword(
@@ -131,6 +137,8 @@ public class RootMutation
                         customerUser.Password,
                         loginData.Password);
                     
+                    
+                    Console.WriteLine("PasswordVerificationresult: ",  PasswordVerificationResult.Success);
                     if (result == PasswordVerificationResult.Success)
                     {
                         
