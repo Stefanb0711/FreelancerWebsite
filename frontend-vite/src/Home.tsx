@@ -16,7 +16,7 @@ function Home() {
             )};
             {!signedIn && (
                 <div>
-                    <h3>Bitte logge dich ein</h3>
+                    <h3>Bitte logge dich ein, um auf Inhalte zugreifen zu könnne</h3>
                 </div>
             )}
 

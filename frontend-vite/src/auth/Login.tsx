@@ -21,6 +21,7 @@ export function Login() {
 
         if (result.login.success === true) {
             setSignedIn(true);
+
             navigate('/');
 
         } else if (result.login.success === false) {
