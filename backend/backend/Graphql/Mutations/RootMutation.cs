@@ -63,10 +63,14 @@ public class RootMutation
                 Builders<CustomerUser>.Filter.Eq(user => user.Email, loginData.UsernameOrEmail)
             );
             
+            var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
+            var customerUser = await _customerUsers.Find(customerFilter).FirstOrDefaultAsync();
 
-            if (freelancerFilter != null)
+            
+            if (freelancerUser != null)
             {
-                var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
+                //var freelancerUser = await _freelancerUsers.Find(freelancerFilter).FirstOrDefaultAsync();
+                
                 //var customerUser = await _customerUsers.Find()
 
                 if (!string.IsNullOrEmpty(loginData.Password))
@@ -117,9 +121,8 @@ public class RootMutation
                     };
                 }
 
-            } else if (customerFilter != null)
+            } else if (customerUser != null)
             {
-                var customerUser = await _customerUsers.Find(customerFilter).FirstOrDefaultAsync();
                 //var customerUser = await _customerUsers.Find()
 
                 if (!string.IsNullOrEmpty(loginData.Password))

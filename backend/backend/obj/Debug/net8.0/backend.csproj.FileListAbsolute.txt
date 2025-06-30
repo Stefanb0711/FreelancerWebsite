@@ -197,3 +197,4 @@ C:\Users\stefa\Documents\Asp.Net\FreelancerWebsite\backend\backend\obj\Debug\net
 C:\Users\stefa\Documents\Asp.Net\FreelancerWebsite\backend\backend\obj\Debug\net8.0\backend.pdb
 C:\Users\stefa\Documents\Asp.Net\FreelancerWebsite\backend\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\Users\stefa\Documents\Asp.Net\FreelancerWebsite\backend\backend\obj\Debug\net8.0\ref\backend.dll
+C:\Users\stefa\Documents\Asp.Net\FreelancerWebsite\backend\backend\obj\Debug\net8.0\backend.sourcelink.json

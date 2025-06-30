@@ -1,12 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import AuthService from "../services/AuthService.service.ts";
 import type {LoginFormModel} from "../models/LoginForm.model.ts";
 import {useNavigate} from "react-router";
+import {AuthContext} from "../App.tsx";
 
 export function Login() {
 
     const [errorMessage, setErrorMessage] = useState<string>('');
 
+    const [signedIn, setSignedIn] = useContext(AuthContext);
 
     const navigate = useNavigate();
 
@@ -18,6 +20,7 @@ export function Login() {
 
 
         if (result.login.success === true) {
+            setSignedIn(true);
             navigate('/');
 
         } else if (result.login.success === false) {
