@@ -6,19 +6,20 @@ import './App.css';
 import { BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 import Home from "./Home";
 import {NavBar} from "./components/NavBar.tsx";
+import type {RegisterDataModel} from "./models/RegisterData.model.ts";
 
 export const AuthContext = React.createContext();
 
 function App() {
 
     const [signedIn, setSignedIn] = useState<boolean>(false);
-
+    const [registerForm, setRegisterForm] = useState<RegisterDataModel | null>(null);
 
     //<AuthContext.Provider value={{signedIn, setSignedIn}}>
     //      </AuthContext.Provider>
   return (
 
-    <AuthContext.Provider value={[signedIn, setSignedIn]}>
+    <AuthContext.Provider value={[signedIn, setSignedIn, registerForm, setRegisterForm]}>
 
           <BrowserRouter>
               <NavBar />

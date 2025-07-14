@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import type {RegisterCustomerModel} from "../models/RegisterCustomer.model.ts";
 import type {RegisterFreelancerModel} from "../models/RegisterFreelancer.model.ts";
 import AuthService from "../services/AuthService.service.ts";
 import type {RegisterDataModel} from "../models/RegisterData.model.ts";
 import {GraphQLClient} from "graphql-request";
 import { useNavigate } from "react-router";
+import FilteredItemField from "../components/FilteredItemField.tsx";
+import type {ServiceModel} from "../models/ServiceModel.ts";
+import ServiceInRegisterFreelancer from "../components/ServiceInRegisterFreelancer.tsx";
+import {AuthContext} from "../App.tsx";
+
 
 
 export function RegisterStep1() {
@@ -14,7 +19,16 @@ export function RegisterStep1() {
 
     const emptyRegisterUser: RegisterCustomerModel | RegisterFreelancerModel = useState();
 
-    let [registerForm, setRegisterForm] = useState<RegisterDataModel | null>(null);
+    let [registerForm, setRegisterForm] = useContext(AuthContext);
+
+    let [newServiceInputActive, setNewServiceInputActive ] = useState<boolean>(false);
+
+    let [currentServiceToEdit, setCurrentServiceToEdit] = useState<ServiceModel>({
+        name: '',
+        price: 0,
+    });
+
+    let [serviceCount, setServiceCount] = useState<number>(0);
 
     /*
     let [customerRegisterForm, setCustomerRegisterForm] = useState<RegisterCustomerModel>({
@@ -38,6 +52,12 @@ export function RegisterStep1() {
     });
     */
 
+
+
+    function onConfirmService() {
+        setServiceCount(serviceCount + 1);
+        registerForm?.services.push(currentServiceToEdit);
+    }
 
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -76,10 +96,10 @@ export function RegisterStep1() {
             passwordConfirm: "",
             biography: "",
             languages: "",
-            services: {
+            services: [{
                 name: '',
                 price: 0
-            }
+            }]
         });
 
         console.log('Current Usertype: ', userType);
@@ -122,10 +142,10 @@ export function RegisterStep1() {
                 passwordConfirm: "",
                 biography: "",
                 languages: "",
-                services: {
+                services: [{
                     name: '',
                     price: 0
-                }
+                }]
             });
         } else if (userType === 'customer') {
             setRegisterForm({
@@ -425,7 +445,7 @@ export function RegisterStep1() {
                             {/* Password Confirm */}
                             <div className="mb-4">
                                 <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
-                                    Passwort Confirm
+                                    Password Confirm
                                 </label>
                                 <input
                                     onChange={(e) => setRegisterForm({...registerForm, passwordConfirm: e.target.value })}
@@ -452,8 +472,40 @@ export function RegisterStep1() {
                                 />
                             </div>
 
+
+                            {/* Services */}
+                            <div>
+
+                                <div>
+                                    <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+                                        Services
+                                    </label>
+                                    {/*<button onClick={onAddNewService} type={'button'}><i className="bi bi-plus"></i></button>*/}
+
+
+                                    {Array(registerForm?.services).map((item, index) => (
+                                        <ServiceInRegisterFreelancer currentService={item} freshService={false} registerForm={registerForm} setRegisterForm={setRegisterForm}  />
+                                    ))}
+
+                                    {/*
+                                    currentService
+                                    freshService
+                                    registerForm
+                                    setRegisterForm
+                                    */}
+
+                                    <ServiceInRegisterFreelancer freshService={true} registerForm={registerForm} setRegisterForm={setRegisterForm} />
+
+
+                                </div>
+
+
+                            </div>
+
+
+
                             {/* Languages */}
-                            <div className="mb-4">
+                            <div className="mb-4 mt-6">
                                 <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
                                     Languages
                                 </label>
