@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Formatting = System.Xml.Formatting;
 using MongoDB.Bson;
 
+
 namespace backend.Graphql.Queries;
 
 public class Query
@@ -16,11 +17,16 @@ public class Query
     private readonly IMongoCollection<CustomerUser> _customerUsers;
     private readonly IMongoCollection<ExampleType> _exampleTable;
     
-    public Query(MongoDbService mongoDbService)
+    private readonly FreelancerService _freelancerService;
+    
+    
+    public Query(MongoDbService mongoDbService, 
+        FreelancerService freelancerService)
     {
         _freelancerUsers = mongoDbService.GetCollection<FreelancerUser>("freelancerUser");
         _customerUsers = mongoDbService.GetCollection<CustomerUser>("customerUser");
         _exampleTable = mongoDbService.GetCollection<ExampleType>("exampleTable");
+        _freelancerService = freelancerService;
     }
 
     
@@ -41,65 +47,37 @@ public class Query
      */
     
     
-    [GraphQLName("getFreelancers")]
-    public async Task<GetFreelancersResponse> GetFreelancers()
-    {
-        try
-        {
+    [GraphQLName("getAllFreelancers")]
+    public async Task<GetFreelancersResponse> GetAllFreelancers() {
             
-            
-            Console.WriteLine("Vor dem Filter");
-            
-            var filter = Builders<FreelancerUser>.Filter.Empty;
-            
-            var freelancerUsers = await _freelancerUsers.Find(filter).ToListAsync();
-            
-            var jsonResult = JsonConvert.SerializeObject(freelancerUsers, Newtonsoft.Json.Formatting.Indented);
-            
-            
-            Console.WriteLine("Freelancer geladen");
-            Console.WriteLine(jsonResult);
-            
-            if (freelancerUsers.Count == 0)
-            {
-                Console.WriteLine("Die Collection ist leer oder die Abfrage liefert keine Daten.");
-            }
-            else
-            {
-
-                Console.WriteLine("Ergebnisse im Json-Format:");
-                Console.WriteLine(jsonResult);
-            }
-            
-            /*
-            foreach (var freelancer in freelancerUsers)
-            {
-                Console.WriteLine($"Email: {freelancer.Email}");
-            }*/
-            
-            return new GetFreelancersResponse
-            {
-                Message = "Freelancer erfolgreich geladen",
-                Success = true,
-                FreelancerUsers = freelancerUsers
-            };
-            
-        }
-        catch (Exception e)
-        {
-            return new GetFreelancersResponse
-            {
-                Message = "Fehler beim Laden der Freelancer",
-                Success = false,
-            };
-        }
+        var result = await _freelancerService.GetAllFreelancers();
         
-
+        
+        return result;
+            
+        /*
+        return new GetFreelancersResponse {
+            Message = "Freelancer erfolgreich geladen",
+            Success = true,
+            FreelancerUsers = new List<FreelancerUser>()
+        };*/ 
+        
+    }
+    
+    
+    [GraphQLName("getRandomFreelancers")]
+    public async Task<GetFreelancersResponse> GetRandomFreelancers()
+    {
+        
+        var result = await _freelancerService.GetRandomFreelancers();
+        
+        return result;
+        
     }
 
 
 
-
+    /*
     [GraphQLName("getExample")]
     public async Task<ResponseType> GetExample()
     {
@@ -143,7 +121,9 @@ public class Query
         };
         
         
-    }
+    }*/
+
+
     
     [GraphQLName("getCustomers")]
     public async Task<GetCustomersResponse> GetCustomers()
@@ -172,6 +152,7 @@ public class Query
         
     }
     
+
     public Task<HelloResponse> Hello()
     {
 
@@ -184,8 +165,4 @@ public class Query
     
 
 
-    
-    //public string HelloWorld() => "Hallo Welt!";
-    
-    
 }

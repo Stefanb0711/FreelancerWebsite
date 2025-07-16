@@ -61,7 +61,7 @@ builder.Services.AddSingleton<MongoDbService>(sp =>
 
 builder.Services.AddSingleton<JwtTokenService>();
 builder.Services.AddSingleton<AuthenticationService>();
-
+builder.Services.AddSingleton<FreelancerService>();
 
 
 var app = builder.Build();
