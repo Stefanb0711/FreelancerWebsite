@@ -2,8 +2,7 @@ import type {FreelancerUser} from "../models/FreelancerUser.model.ts";
 
 export default function FreelancerCard({username, languages, services, biography, rating}: FreelancerUser) {
 
-
-
+    //kommrnr
     return (
         <div>
             <h2>{{username}}</h2>
