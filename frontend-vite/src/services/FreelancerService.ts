@@ -7,7 +7,7 @@ class FreelancerService {
 
     private client: GraphQLClient = new GraphQLClient('https://localhost:7115/graphql');
 
-    public randomFreelancers: any;
+    public randomFreelancers: any[];
     public allFreelancers: any;
 
     private constructor() {

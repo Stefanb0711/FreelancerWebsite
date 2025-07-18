@@ -66,7 +66,7 @@ public class FreelancerService
         }
         
     }
-
+    
     public async Task<GetFreelancersResponse> GetRandomFreelancers()
     {
         try

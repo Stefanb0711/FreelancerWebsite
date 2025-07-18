@@ -12,7 +12,6 @@ function Home() {
 
 
 
-
     useEffect(() => {
 
 
@@ -48,14 +47,15 @@ function Home() {
                         </h1>
 
                         <ul>
-
-                            {FreelancerService.randomFreelancers.map((freelancer, index) => (
-                                <li key={freelancer.id}>
-                                    {/*<FreelancerCard username={freelancer.username} languages={freelancer.languages} services={freelancer.services} biography={freelancer.biography} />*/}
-                                    <strong>{freelancer.username}</strong>
+                            {FreelancerService.randomFreelancers?.map((freelancer: FreelancerUser, index) => (
+                                <li key={index}>
+                                    <h2>{freelancer.username}</h2>
+                                    {/*<FreelancerCard freelancer={freelancer} />*/}
                                 </li>
                             ))}
                         </ul>
+
+
                     </div>
                 )}
 

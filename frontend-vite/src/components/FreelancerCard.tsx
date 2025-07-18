@@ -1,23 +1,28 @@
 import type {FreelancerUser} from "../models/FreelancerUser.model.ts";
 
-export default function FreelancerCard({username, languages, services, biography, rating}: FreelancerUser) {
+//{username, languages, services, biography, rating}
+export default function FreelancerCard(props: {freelancer: FreelancerUser}) {
 
-    //kommrnr
+    const freelancer = props.freelancer;
+
     return (
         <div>
-            <h2>{{username}}</h2>
+
+            <h2>{freelancer.username}</h2>
 
             <h3>Languages</h3>
             <ul>
-                {languages.map((language, index) => (
+                {freelancer.languages?.map((language, index) => (
                     <li key={index}>{language}</li>
                 ))}
 
             </ul>
             <ul>
-                {services.map((service, index) => (
+
+                {freelancer.services?.map((service, index) => (
                     <li key={index}>{service.name}</li>
                 ))}
+
             </ul>
         </div>
     )
